@@ -11,7 +11,7 @@ def init_browser():
     return Browser("chrome", **executable_path, headless=False)
 
 
-def scrape():
+def scrape_info():
     browser = init_browser()
 
 # Latest News
@@ -20,10 +20,9 @@ def scrape():
     time.sleep(1)
     html = browser.html
     soup = bs(html, "html.parser")
-    title = soup.find(class_='content_title').a
-    latest_title = title.text.strip()
-    para = soup.find(class_='article_teaser_body').text
-    latest_para = para.text
+    title = soup.find_all(class_='content_title')
+    latest_title = title[1].a.text
+    latest_para = soup.find(class_='article_teaser_body').text
 # Full Image
     url_mars = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(url_mars)
@@ -72,16 +71,19 @@ def scrape():
         "Latest_News_Title":latest_title,
         "Latest_News_Preview":latest_para,
         "Full_Image": full_image_url,
-        "Hemisphere_1": hemisphere_list[0],
-        "Hemisphere_2": hemisphere_list[1],
-        "Hemisphere_3": hemisphere_list[2],
-        "Hemisphere_4": hemisphere_list[3]
-    
+        "Hemisphere_1_title": hemisphere_list[0]['title'],
+        "Hemisphere_2_title": hemisphere_list[1]['title'],
+        "Hemisphere_3_title": hemisphere_list[2]['title'],
+        "Hemisphere_4_title": hemisphere_list[3]['title'],
+        "Hemisphere_1_url": hemisphere_list[0]['img_url'],
+        "Hemisphere_2_url": hemisphere_list[1]['img_url'],
+        "Hemisphere_3_url": hemisphere_list[2]['img_url'],
+        "Hemisphere_4_url": hemisphere_list[3]['img_url']
     }
 
     browser.quit()
 
     # Return results
     return mars_data
-
+scrape_info()
 
